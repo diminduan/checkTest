@@ -1,17 +1,20 @@
 package com.example.checktest;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.checktest.services.MyService;
+import com.example.checktest.utils.ActivityCollector;
 
-public class ChangeActivity extends AppCompatActivity {
+public class ChangeActivity extends BaseActivity {
 
     String TAG = "<<< ChangeActivity >>>";
 
@@ -21,6 +24,8 @@ public class ChangeActivity extends AppCompatActivity {
         Log.d(TAG, "<------- apply onCreate -------> ");
 
         final Button submit_btn = findViewById(R.id.btn2);
+        Button exit_btn = findViewById(R.id.exit_btn);
+
         submit_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -30,10 +35,33 @@ public class ChangeActivity extends AppCompatActivity {
             }
         });
 
+        exit_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppExit(ChangeActivity.this);
+            }
+        });
+
 //        TextView change_text = findViewById(R.id.text1);
 //        change_text.setText("change");
 
     }
+
+    /**
+     * 退出应用
+     */
+    private void AppExit(Context context) {
+        try {
+            ActivityCollector.finishAll();
+            ActivityManager activityManager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+            activityManager.killBackgroundProcesses(context.getPackageName());
+            System.exit(0);
+
+        }catch (Exception e){}
+
+    }
+
+
 
     private void stopService(View view) {
         stopService(new Intent(getBaseContext(), MyService.class));

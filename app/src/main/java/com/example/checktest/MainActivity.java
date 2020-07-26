@@ -2,37 +2,58 @@ package com.example.checktest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import com.example.checktest.services.MyService;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     String TAG = "<<< MainActivity >>>";
+    private MyService.Mybinder mybinder;
+
+
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mybinder = (MyService.Mybinder)service;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(TAG, "<------- apply onCreate ------->");
-        final Button change_btn = findViewById(R.id.btn1);
+        Button change_btn = findViewById(R.id.btn1);
+        Button test_btn = findViewById(R.id.btn_test);
         change_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 startActivity(new Intent(MainActivity.this,ChangeActivity.class));
+                bindService(new Intent(getBaseContext(),MyService.class),connection,BIND_AUTO_CREATE);
+            }
+        });
 
-                startService(change_btn);
+        test_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mybinder.testFunc();
             }
         });
     }
 
-    private void startService(View view) {
-        startService(new Intent(getBaseContext(), MyService.class));
-    }
 
     /**
      * onStart
@@ -79,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
      */
     protected void onDestroy(){
         super.onDestroy();
+        unbindService(connection);
         Log.d(TAG, "<------- apply onDestroy ------->");
     }
 
