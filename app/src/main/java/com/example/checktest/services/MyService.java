@@ -6,15 +6,12 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
-
 import androidx.annotation.Nullable;
-
-import java.text.SimpleDateFormat;
 
 public class MyService extends Service {
     private String TAG = "MyService";
 
-    public class Mybinder extends Binder{
+    public  class Mybinder extends Binder{
 
         public void testFunc(){
             Toast.makeText(getApplicationContext(), "its just a test function", Toast.LENGTH_SHORT).show();
@@ -41,6 +38,7 @@ public class MyService extends Service {
 //        Log.d("Time", "Now time is :" + timeNow);
 //        return START_STICKY;
 //    }
+
 
 
 

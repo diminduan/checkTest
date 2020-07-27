@@ -1,9 +1,11 @@
 package com.example.checktest;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.checktest.utils.ActivityCollector;
@@ -24,17 +26,18 @@ public class BaseActivity extends AppCompatActivity {
         ActivityCollector.removeActivity(this);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean onKeyDown(int keyCode, KeyEvent event){
         if (keyCode == KeyEvent.KEYCODE_BACK){
             if ((System.currentTimeMillis() - exitTime) > 2000){
                 Toast.makeText(getApplicationContext(), "再按一次退出应用", Toast.LENGTH_SHORT).show();
                 exitTime = System.currentTimeMillis();
             } else {
+                ActivityCollector.finishAll();
                 System.exit(0);
-                finish();
             }
             return false;
         }
-        return onKeyDown(keyCode, event);
+        return super.onKeyDown(keyCode, event);
     }
 }
